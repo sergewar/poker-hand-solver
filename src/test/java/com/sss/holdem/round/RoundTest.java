@@ -41,7 +41,7 @@ class RoundTest {
         return new Object[][]{
                 {List.of(
                         new PlayerWithRank(
-                                2,
+                                0,
                                 new Player(new Rule(false),
                                         List.of(new Card(CARD_7, SUIT_H),
                                                 new Card(CARD_8, SUIT_S)
@@ -49,7 +49,7 @@ class RoundTest {
                                 )
                         ),
                         new PlayerWithRank(
-                                4,
+                                1,
                                 new Player(new Rule(false),
                                         List.of(new Card(CARD_2, SUIT_S),
                                                 new Card(CARD_3, SUIT_D)
@@ -57,7 +57,7 @@ class RoundTest {
                                 )
                         ),
                         new PlayerWithRank(
-                                32,
+                                2,
                                 new Player(new Rule(false),
                                         List.of(new Card(CARD_4, SUIT_D),
                                                 new Card(CARD_3, SUIT_C)
@@ -65,7 +65,7 @@ class RoundTest {
                                 )
                         ),
                         new PlayerWithRank(
-                                32,
+                                3,
                                 new Player(new Rule(false),
                                         List.of(new Card(CARD_5, SUIT_C),
                                                 new Card(CARD_6, SUIT_D)
@@ -73,7 +73,7 @@ class RoundTest {
                                 )
                         ),
                         new PlayerWithRank(
-                                32,
+                                4,
                                 new Player(new Rule(false),
                                         List.of(new Card(CARD_T, SUIT_D),
                                                 new Card(CARD_9, SUIT_C)
@@ -81,7 +81,7 @@ class RoundTest {
                                 )
                         ),
                         new PlayerWithRank(
-                                32,
+                                5,
                                 new Player(new Rule(false),
                                         List.of(new Card(CARD_A, SUIT_C),
                                                 new Card(CARD_K, SUIT_D)
@@ -89,7 +89,7 @@ class RoundTest {
                                 )
                         ),
                         new PlayerWithRank(
-                                32,
+                                6,
                                 new Player(new Rule(false),
                                         List.of(new Card(CARD_J, SUIT_C),
                                                 new Card(CARD_Q, SUIT_D)

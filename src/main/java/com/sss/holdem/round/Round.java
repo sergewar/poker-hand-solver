@@ -18,6 +18,7 @@ import com.sss.holdem.round.checkers.ThreeOfAKindCombination;
 import com.sss.holdem.round.checkers.TwoPairsCombination;
 import com.sss.holdem.rules.Rule;
 import io.vavr.Tuple;
+import io.vavr.Tuple2;
 import io.vavr.Tuple3;
 import io.vavr.control.Option;
 import lombok.Getter;
@@ -26,6 +27,7 @@ import lombok.ToString;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -162,9 +164,24 @@ public class Round {
                         .sorted(new PlayerByResultComparator())
                         .collect(Collectors.toUnmodifiableList());
 
-        return playersResultSorted.stream()
-                .map(playerResult -> new PlayerWithRank(playerResult._2.getRank(), playerResult._1))
-                .collect(Collectors.toUnmodifiableList());
+        int curR = 0;
+        final PlayerCombinationAndCardsComparator playerCombinationAndCardsComparator = new PlayerCombinationAndCardsComparator();
+        final Iterator<Tuple3<Player, CombinationRank, List<Card>>> iter = playersResultSorted.iterator();
+        final List<PlayerWithRank> out = new ArrayList<>();
+        Tuple3<Player, CombinationRank, List<Card>> current;
+        Tuple3<Player, CombinationRank, List<Card>> previous = iter.next();
+        out.add(new PlayerWithRank(curR, previous._1));
+        while (iter.hasNext()) {
+            current = iter.next();
+            if (playerCombinationAndCardsComparator
+                    .compare(Tuple.of(current._2, current._3), Tuple.of(previous._2, previous._3)) != 0) {
+                curR++;
+            }
+            previous = current;
+            out.add(new PlayerWithRank(curR, previous._1));
+        }
+
+        return out;
     }
 
     private static class PlayerByResultComparator implements Comparator<Tuple3<Player, CombinationRank, List<Card>>> {
@@ -175,6 +192,17 @@ public class Round {
                 return rc;
             }
             return new CardsByRankComparator().compare(o1._3, o2._3);
+        }
+    }
+
+    private static class PlayerCombinationAndCardsComparator implements Comparator<Tuple2<CombinationRank, List<Card>>> {
+        @Override
+        public int compare(final Tuple2<CombinationRank, List<Card>> o1, final Tuple2<CombinationRank, List<Card>> o2) {
+            final int rc = o1._1.getRank() - o2._1.getRank();
+            if (rc != 0) {
+                return rc;
+            }
+            return new CardsByRankComparator().compare(o1._2, o2._2);
         }
     }
 }
