@@ -5,16 +5,148 @@ import com.sss.holdem.card.Card;
 import com.sss.holdem.card.CardRank;
 import com.sss.holdem.card.CardSuit;
 import com.sss.holdem.player.Player;
+import com.sss.holdem.player.PlayerWithRank;
 import com.sss.holdem.rules.Rule;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
 
+import static com.sss.holdem.card.CardRank.CARD_2;
+import static com.sss.holdem.card.CardRank.CARD_3;
+import static com.sss.holdem.card.CardRank.CARD_4;
+import static com.sss.holdem.card.CardRank.CARD_5;
+import static com.sss.holdem.card.CardRank.CARD_6;
+import static com.sss.holdem.card.CardRank.CARD_7;
+import static com.sss.holdem.card.CardRank.CARD_8;
+import static com.sss.holdem.card.CardRank.CARD_9;
+import static com.sss.holdem.card.CardRank.CARD_A;
+import static com.sss.holdem.card.CardRank.CARD_J;
+import static com.sss.holdem.card.CardRank.CARD_K;
+import static com.sss.holdem.card.CardRank.CARD_Q;
+import static com.sss.holdem.card.CardRank.CARD_T;
+import static com.sss.holdem.card.CardSuit.SUIT_C;
+import static com.sss.holdem.card.CardSuit.SUIT_D;
+import static com.sss.holdem.card.CardSuit.SUIT_H;
+import static com.sss.holdem.card.CardSuit.SUIT_S;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class RoundTest {
+
+    private static Object[][] testDataPositiveCases() {
+        return new Object[][]{
+                {List.of(
+                        new PlayerWithRank(
+                                2,
+                                new Player(new Rule(false),
+                                        List.of(new Card(CARD_7, SUIT_H),
+                                                new Card(CARD_8, SUIT_S)
+                                        )
+                                )
+                        ),
+                        new PlayerWithRank(
+                                4,
+                                new Player(new Rule(false),
+                                        List.of(new Card(CARD_2, SUIT_S),
+                                                new Card(CARD_3, SUIT_D)
+                                        )
+                                )
+                        ),
+                        new PlayerWithRank(
+                                32,
+                                new Player(new Rule(false),
+                                        List.of(new Card(CARD_4, SUIT_D),
+                                                new Card(CARD_3, SUIT_C)
+                                        )
+                                )
+                        ),
+                        new PlayerWithRank(
+                                32,
+                                new Player(new Rule(false),
+                                        List.of(new Card(CARD_5, SUIT_C),
+                                                new Card(CARD_6, SUIT_D)
+                                        )
+                                )
+                        ),
+                        new PlayerWithRank(
+                                32,
+                                new Player(new Rule(false),
+                                        List.of(new Card(CARD_T, SUIT_D),
+                                                new Card(CARD_9, SUIT_C)
+                                        )
+                                )
+                        ),
+                        new PlayerWithRank(
+                                32,
+                                new Player(new Rule(false),
+                                        List.of(new Card(CARD_A, SUIT_C),
+                                                new Card(CARD_K, SUIT_D)
+                                        )
+                                )
+                        ),
+                        new PlayerWithRank(
+                                32,
+                                new Player(new Rule(false),
+                                        List.of(new Card(CARD_J, SUIT_C),
+                                                new Card(CARD_Q, SUIT_D)
+                                        )
+                                )
+                        )
+                ),
+                        new Round(
+                                new Rule(false),
+                                new Board(new Rule(false),
+                                        List.of(
+                                                new Card(CARD_2, SUIT_C),
+                                                new Card(CARD_3, SUIT_C),
+                                                new Card(CARD_6, SUIT_C),
+                                                new Card(CARD_7, SUIT_C),
+                                                new Card(CARD_9, SUIT_D)
+                                        )),
+                                List.of(
+                                        new Player(new Rule(false),
+                                                List.of(new Card(CARD_2, SUIT_S),
+                                                        new Card(CARD_3, SUIT_D)
+                                                )),
+                                        new Player(new Rule(false),
+                                                List.of(
+                                                        new Card(CARD_4, SUIT_D),
+                                                        new Card(CARD_3, SUIT_C)
+                                                )
+                                        ),
+                                        new Player(new Rule(false),
+                                                List.of(new Card(CARD_5, SUIT_C),
+                                                        new Card(CARD_6, SUIT_D)
+                                                )
+                                        ),
+                                        new Player(new Rule(false),
+                                                List.of(new Card(CARD_7, SUIT_H),
+                                                        new Card(CARD_8, SUIT_S)
+                                                )
+                                        ),
+                                        new Player(new Rule(false),
+                                                List.of(new Card(CARD_T, SUIT_D),
+                                                        new Card(CARD_9, SUIT_C)
+                                                )
+                                        ),
+                                        new Player(new Rule(false),
+                                                List.of(new Card(CARD_J, SUIT_C),
+                                                        new Card(CARD_Q, SUIT_D)
+                                                )
+                                        ),
+                                        new Player(new Rule(false),
+                                                List.of(new Card(CARD_A, SUIT_C),
+                                                        new Card(CARD_K, SUIT_D)
+                                                )
+                                        )),
+                                ""
+                        )},
+        };
+    }
 
     @Test
     public void invalidRoundIfIncorrectCountOfCardsForBoardWithoutOmahaRule() {
@@ -290,4 +422,9 @@ class RoundTest {
         );
     }
 
+    @ParameterizedTest
+    @MethodSource("testDataPositiveCases")
+    void getPlayersRank(final List<PlayerWithRank> playerWithRanks, final Round round) {
+        assertEquals(playerWithRanks, round.getPlayersRank());
+    }
 }
