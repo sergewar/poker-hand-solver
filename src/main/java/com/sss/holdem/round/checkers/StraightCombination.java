@@ -1,0 +1,105 @@
+package com.sss.holdem.round.checkers;
+
+import com.sss.holdem.card.Card;
+import com.sss.holdem.card.CardRank;
+import com.sss.holdem.card.helpers.CardByRankHighToLowComparator;
+import com.sss.holdem.card.helpers.CardBySuitComparator;
+import io.vavr.control.Option;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import static io.vavr.API.None;
+import static io.vavr.API.Some;
+
+public class StraightCombination implements Combination {
+
+    //! Methods distinctByKey() not my code! It was copy pasted.
+    // I don't understand clearly how it works but it works as I need:(
+    private <T> Predicate<T> distinctByKey(final Function<? super T, ?> keyExtractor) {
+        final Set<Object> seen = new HashSet<>();
+        return t -> seen.add(keyExtractor.apply(t));
+    }
+
+    /**
+     * checking it has Straight combination
+     *
+     * @param cards board's and player's cards
+     * @return is valid and list of 5 cards creating this combination
+     */
+    @Override
+    public Option<List<Card>> isCombinationValid(final List<Card> cards) {
+        final List<Card> cardsSorted = cards.stream()
+                .sorted(new CardBySuitComparator())
+                .sorted(new CardByRankHighToLowComparator())
+                .filter(distinctByKey(Card::getCardRank))
+                .collect(Collectors.toUnmodifiableList());
+        if (cardsSorted.size() < 5) {
+            return None();
+        }
+
+        // it's not looking good but щито поделать Десу
+        Option<List<Card>> strSorted = getBestSublistFiveCardsOrderedOnByOne(cardsSorted);
+        if (strSorted.isDefined()) {
+            final List<Card> straightCards = strSorted.get();
+            return Some(
+                    List.of(
+                            straightCards.get(4),
+                            straightCards.get(3),
+                            straightCards.get(2),
+                            straightCards.get(1),
+                            straightCards.get(0)
+                    ));
+        } else if (cardsSorted.get(0).getCardRank() == CardRank.CARD_A
+                && cardsSorted.get(cardsSorted.size() - 1).getCardRank() == CardRank.CARD_2
+                && cardsSorted.get(cardsSorted.size() - 2).getCardRank() == CardRank.CARD_3
+                && cardsSorted.get(cardsSorted.size() - 3).getCardRank() == CardRank.CARD_4
+                && cardsSorted.get(cardsSorted.size() - 4).getCardRank() == CardRank.CARD_5) {
+            return Some(
+                    List.of(
+                            cardsSorted.get(0),
+                            cardsSorted.get(cardsSorted.size() - 1),
+                            cardsSorted.get(cardsSorted.size() - 2),
+                            cardsSorted.get(cardsSorted.size() - 3),
+                            cardsSorted.get(cardsSorted.size() - 4)
+                    ));
+
+        }
+        return None();
+    }
+
+    private Option<List<Card>> getBestSublistFiveCardsOrderedOnByOne(final List<Card> cards) {
+        // expect that cards were sorted in high to low order previously
+        // don't sort and check size here again because of performance
+//        if (cards.size() < 5) {
+//            return None();
+//        }
+
+        for (int i = 0; i < cards.size(); i++) {
+            final Iterator<Card> iter = cards.subList(i, cards.size()).iterator();
+            final List<Card> strCards = new ArrayList<>();
+            Card current;
+            Card previous = iter.next();
+            strCards.add(previous);
+            final CardByRankHighToLowComparator cardByRankHighToLowComparator = new CardByRankHighToLowComparator();
+            while (iter.hasNext()) {
+                current = iter.next();
+                if (cardByRankHighToLowComparator.compare(current, previous) != 1) {
+                    break;
+                }
+                previous = current;
+                strCards.add(previous);
+            }
+            if (strCards.size() == 5) {
+                return Some(strCards);
+            }
+        }
+        return None();
+    }
+}
