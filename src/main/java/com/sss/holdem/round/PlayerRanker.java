@@ -20,7 +20,7 @@ public final class PlayerRanker {
         final CardsUtils cardsUtils = new CardsUtils();
         final StringBuilder sb = new StringBuilder();
         // todo need to update below because it not in good style
-        IntStream.range(0, playersWithRankSorted.size()).forEach(i -> {
+        IntStream.range(0, playersWithRankSorted.size() - 1).forEach(i -> {
             sb.append(cardsUtils.cardsToString(playersWithRankSorted.get(i).getPlayer().getCards()));
             if (playersWithRankSorted.get(i).getRank() == playersWithRankSorted.get(i + 1).getRank()) {
                 sb.append("=");
