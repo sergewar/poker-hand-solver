@@ -1,8 +1,8 @@
 package com.sss.holdem;
 
 import com.sss.holdem.player.PlayerWithRank;
-import com.sss.holdem.round.PlayerRanker;
 import com.sss.holdem.round.Round;
+import com.sss.holdem.round.RoundPlayersWithRank;
 import com.sss.holdem.rules.Rule;
 import com.sss.holdem.utils.ConsoleReader;
 import com.sss.holdem.utils.ConsoleWriter;
@@ -38,7 +38,7 @@ public class Runner {
         final Writer consoleWriter = new ConsoleWriter();
         if (round.isValid()) {
             final List<PlayerWithRank> pwr = round.getPlayersRank();
-            consoleWriter.writeLine(PlayerRanker.playersWithRankCardsToString(pwr));
+            consoleWriter.writeLine(new RoundPlayersWithRank(pwr).toString());
         } else {
             consoleWriter.writeLine(round.getRoundInfo());
         }
