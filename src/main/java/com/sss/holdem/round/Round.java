@@ -83,7 +83,7 @@ public class Round {
 
     public List<PlayerWithRank> getPlayersRank() {
         final List<Tuple3<Player, CombinationRank, List<Card>>> playersResult = new ArrayList<>();
-        boolean isLog = Boolean.parseBoolean(System.getProperty("logg", "false"));
+        final boolean isLog = Boolean.parseBoolean(System.getProperty("logg", "false"));
         players.forEach(player -> {
             final List<Card> allCards = concatLists(board.getBoardCards(), player.getCards());
 
