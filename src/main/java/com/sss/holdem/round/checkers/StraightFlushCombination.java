@@ -3,6 +3,8 @@ package com.sss.holdem.round.checkers;
 import com.sss.holdem.card.Card;
 import com.sss.holdem.card.CardSuit;
 import com.sss.holdem.card.helpers.CardByRankHighToLowComparator;
+import io.vavr.Tuple;
+import io.vavr.Tuple2;
 import io.vavr.control.Option;
 
 import java.util.Collections;
@@ -13,6 +15,7 @@ import static com.sss.holdem.card.CardSuit.SUIT_C;
 import static com.sss.holdem.card.CardSuit.SUIT_D;
 import static com.sss.holdem.card.CardSuit.SUIT_H;
 import static com.sss.holdem.card.CardSuit.SUIT_S;
+import static com.sss.holdem.round.checkers.CombinationRank.STRAIGHT_FLUSH;
 import static io.vavr.API.None;
 import static io.vavr.API.Some;
 
@@ -24,16 +27,17 @@ public class StraightFlushCombination implements Combination {
      * @return is valid and list of 5 cards creating this combination
      */
     @Override
-    public Option<List<Card>> isCombinationValid(final List<Card> cards) {
+    public Option<Tuple2<CombinationRank, List<Card>>> isCombinationValid(final List<Card> cards) {
         final Option<List<Card>> flushCombinationCards = getAllCardsForFlush(cards);
         if (flushCombinationCards.isEmpty()) {
             return None();
         }
 
-        final Option<List<Card>> straightFlushCombination = new StraightCombination().isCombinationValid(flushCombinationCards.get());
+        final Option<Tuple2<CombinationRank, List<Card>>> straightFlushCombination =
+                new StraightCombination().isCombinationValid(flushCombinationCards.get());
 
         if (straightFlushCombination.isDefined()) {
-            return straightFlushCombination;
+            return Some(Tuple.of(STRAIGHT_FLUSH, straightFlushCombination.get()._2));
         }
         return None();
     }

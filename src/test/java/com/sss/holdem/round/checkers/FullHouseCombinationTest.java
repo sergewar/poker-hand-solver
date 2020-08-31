@@ -1,6 +1,7 @@
 package com.sss.holdem.round.checkers;
 
 import com.sss.holdem.card.Card;
+import io.vavr.Tuple2;
 import io.vavr.control.Option;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -105,14 +106,14 @@ class FullHouseCombinationTest {
     @ParameterizedTest
     @MethodSource("testDataPositiveCases")
     void testFullHouseCombination_PositiveCases(final List<Card> inputCards, final List<Card> combinationCards) {
-        final Option<List<Card>> result = new FullHouseCombination().isCombinationValid(inputCards);
-        assertEquals(combinationCards, result.get(), "Not a Full House result, input cards " + inputCards);
+        final Option<Tuple2<CombinationRank, List<Card>>> result = new FullHouseCombination().isCombinationValid(inputCards);
+        assertEquals(combinationCards, result.get()._2, "Not a Full House result, input cards " + inputCards);
     }
 
     @ParameterizedTest
     @MethodSource("testDataNegativeCases")
     void testFullHouseCombination_NegativeCases(final List<Card> inputCards) {
-        final Option<List<Card>> result = new FullHouseCombination().isCombinationValid(inputCards);
+        final Option<Tuple2<CombinationRank, List<Card>>> result = new FullHouseCombination().isCombinationValid(inputCards);
         assertTrue(result.isEmpty(), "Unexpected Full House result " + inputCards);
     }
 }

@@ -1,6 +1,7 @@
 package com.sss.holdem.round.checkers;
 
 import com.sss.holdem.card.Card;
+import io.vavr.Tuple2;
 import io.vavr.control.Option;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -159,14 +160,14 @@ class FlushCombinationTest {
     @ParameterizedTest
     @MethodSource("testDataPositiveCases")
     void testFlushCombination_PositiveCases(final List<Card> inputCards, final List<Card> combinationCards) {
-        final Option<List<Card>> result = new FlushCombination().isCombinationValid(inputCards);
-        assertEquals(combinationCards, result.get(), "Not a Flush result, input cards " + inputCards);
+        final Option<Tuple2<CombinationRank, List<Card>>> result = new FlushCombination().isCombinationValid(inputCards);
+        assertEquals(combinationCards, result.get()._2, "Not a Flush result, input cards " + inputCards);
     }
 
     @ParameterizedTest
     @MethodSource("testDataNegativeCases")
     void testFlushCombination_NegativeCases(final List<Card> inputCards) {
-        final Option<List<Card>> result = new FlushCombination().isCombinationValid(inputCards);
+        final Option<Tuple2<CombinationRank, List<Card>>> result = new FlushCombination().isCombinationValid(inputCards);
         assertTrue(result.isEmpty(), "Unexpected Flush result " + inputCards);
     }
 }

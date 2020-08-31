@@ -1,6 +1,7 @@
 package com.sss.holdem.round.checkers;
 
 import com.sss.holdem.card.Card;
+import io.vavr.Tuple2;
 import io.vavr.control.Option;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -110,14 +111,14 @@ class HighCardCombinationTest {
     @ParameterizedTest
     @MethodSource("testDataPositiveCases")
     void testHighCardCombination_PositiveCases(final List<Card> inputCards, final List<Card> combinationCards) {
-        final Option<List<Card>> result = new HighCardCombination().isCombinationValid(inputCards);
-        assertEquals(combinationCards, result.get(), "Not a High Card result, input cards " + inputCards);
+        final Option<Tuple2<CombinationRank, List<Card>>> result = new HighCardCombination().isCombinationValid(inputCards);
+        assertEquals(combinationCards, result.get()._2, "Not a High Card result, input cards " + inputCards);
     }
 
     @ParameterizedTest
     @MethodSource("testDataNegativeCases")
     void testHighCardCombination_NegativeCases(final List<Card> inputCards) {
-        final Option<List<Card>> result = new HighCardCombination().isCombinationValid(inputCards);
+        final Option<Tuple2<CombinationRank, List<Card>>> result = new HighCardCombination().isCombinationValid(inputCards);
         assertFalse(result.isEmpty(), "Unexpected High Card result " + inputCards);
     }
 }

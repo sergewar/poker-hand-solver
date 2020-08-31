@@ -1,6 +1,7 @@
 package com.sss.holdem.round.checkers;
 
 import com.sss.holdem.card.Card;
+import io.vavr.Tuple2;
 import io.vavr.control.Option;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -93,14 +94,14 @@ class FourOfAKindCombinationTest {
     @ParameterizedTest
     @MethodSource("testDataPositiveCases")
     void testFourOfAKindCombination_PositiveCases(final List<Card> inputCards, final List<Card> combinationCards) {
-        final Option<List<Card>> result = new FourOfAKindCombination().isCombinationValid(inputCards);
-        assertEquals(combinationCards, result.get(), "Not a Four of a kind result, input cards " + inputCards);
+        final Option<Tuple2<CombinationRank, List<Card>>> result = new FourOfAKindCombination().isCombinationValid(inputCards);
+        assertEquals(combinationCards, result.get()._2, "Not a Four of a kind result, input cards " + inputCards);
     }
 
     @ParameterizedTest
     @MethodSource("testDataNegativeCases")
     void testFourOfAKindCombination_NegativeCases(final List<Card> inputCards) {
-        final Option<List<Card>> result = new FourOfAKindCombination().isCombinationValid(inputCards);
+        final Option<Tuple2<CombinationRank, List<Card>>> result = new FourOfAKindCombination().isCombinationValid(inputCards);
         assertTrue(result.isEmpty(), "Unexpected a Four of a kind result " + inputCards);
     }
 }

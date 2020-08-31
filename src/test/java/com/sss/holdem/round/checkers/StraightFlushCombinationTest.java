@@ -1,6 +1,7 @@
 package com.sss.holdem.round.checkers;
 
 import com.sss.holdem.card.Card;
+import io.vavr.Tuple2;
 import io.vavr.control.Option;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -37,11 +38,11 @@ class StraightFlushCombinationTest {
                         new Card(CARD_4, SUIT_D),
                         new Card(CARD_A, SUIT_D)
                 ),
-                        List.of(new Card(CARD_A, SUIT_D),
-                                new Card(CARD_2, SUIT_D),
-                                new Card(CARD_3, SUIT_D),
+                        List.of(new Card(CARD_5, SUIT_D),
                                 new Card(CARD_4, SUIT_D),
-                                new Card(CARD_5, SUIT_D)
+                                new Card(CARD_3, SUIT_D),
+                                new Card(CARD_2, SUIT_D),
+                                new Card(CARD_A, SUIT_D)
                         )},
                 {List.of(new Card(CARD_2, SUIT_C),
                         new Card(CARD_T, SUIT_S),
@@ -56,11 +57,11 @@ class StraightFlushCombinationTest {
                         new Card(CARD_9, SUIT_H),
                         new Card(CARD_T, SUIT_C)
                 ),
-                        List.of(new Card(CARD_T, SUIT_C),
-                                new Card(CARD_J, SUIT_C),
-                                new Card(CARD_Q, SUIT_C),
+                        List.of(new Card(CARD_A, SUIT_C),
                                 new Card(CARD_K, SUIT_C),
-                                new Card(CARD_A, SUIT_C)
+                                new Card(CARD_Q, SUIT_C),
+                                new Card(CARD_J, SUIT_C),
+                                new Card(CARD_T, SUIT_C)
                         )},
         };
     }
@@ -101,14 +102,14 @@ class StraightFlushCombinationTest {
     @ParameterizedTest
     @MethodSource("testDataPositiveCases")
     void testStraightFlushCombination_PositiveCases(final List<Card> inputCards, final List<Card> combinationCards) {
-        final Option<List<Card>> result = new StraightFlushCombination().isCombinationValid(inputCards);
-        assertEquals(combinationCards, result.get(), "Not a Straight Flush result, input cards " + inputCards);
+        final Option<Tuple2<CombinationRank, List<Card>>> result = new StraightFlushCombination().isCombinationValid(inputCards);
+        assertEquals(combinationCards, result.get()._2, "Not a Straight Flush result, input cards " + inputCards);
     }
 
     @ParameterizedTest
     @MethodSource("testDataNegativeCases")
     void testStraightFlushCombination_NegativeCases(final List<Card> inputCards) {
-        final Option<List<Card>> result = new StraightFlushCombination().isCombinationValid(inputCards);
+        final Option<Tuple2<CombinationRank, List<Card>>> result = new StraightFlushCombination().isCombinationValid(inputCards);
         assertTrue(result.isEmpty(), "Unexpected Straight Flush result " + inputCards);
     }
 }

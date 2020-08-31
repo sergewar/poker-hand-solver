@@ -7,6 +7,7 @@ import com.sss.holdem.card.CardSuit;
 import com.sss.holdem.player.Player;
 import com.sss.holdem.player.PlayerWithRank;
 import com.sss.holdem.rules.Rule;
+import io.vavr.Tuple;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -30,6 +31,9 @@ import static com.sss.holdem.card.CardSuit.SUIT_C;
 import static com.sss.holdem.card.CardSuit.SUIT_D;
 import static com.sss.holdem.card.CardSuit.SUIT_H;
 import static com.sss.holdem.card.CardSuit.SUIT_S;
+import static com.sss.holdem.round.checkers.CombinationRank.FLUSH;
+import static com.sss.holdem.round.checkers.CombinationRank.PAIR;
+import static com.sss.holdem.round.checkers.CombinationRank.TWO_PAIRS;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -46,6 +50,14 @@ class RoundTest {
                                         List.of(new Card(CARD_7, SUIT_H),
                                                 new Card(CARD_8, SUIT_S)
                                         )
+                                ),
+                                Tuple.of(PAIR,
+                                        List.of(new Card(CARD_7, SUIT_C),
+                                                new Card(CARD_7, SUIT_H),
+                                                new Card(CARD_9, SUIT_D),
+                                                new Card(CARD_8, SUIT_S),
+                                                new Card(CARD_6, SUIT_C)
+                                        )
                                 )
                         ),
                         new PlayerWithRank(
@@ -53,6 +65,14 @@ class RoundTest {
                                 new Player(new Rule(false),
                                         List.of(new Card(CARD_2, SUIT_S),
                                                 new Card(CARD_3, SUIT_D)
+                                        )
+                                ),
+                                Tuple.of(TWO_PAIRS,
+                                        List.of(new Card(CARD_3, SUIT_C),
+                                                new Card(CARD_3, SUIT_D),
+                                                new Card(CARD_2, SUIT_C),
+                                                new Card(CARD_2, SUIT_S),
+                                                new Card(CARD_9, SUIT_D)
                                         )
                                 )
                         ),
@@ -62,6 +82,14 @@ class RoundTest {
                                         List.of(new Card(CARD_4, SUIT_D),
                                                 new Card(CARD_3, SUIT_C)
                                         )
+                                ),
+                                Tuple.of(FLUSH,
+                                        List.of(new Card(CARD_7, SUIT_C),
+                                                new Card(CARD_6, SUIT_C),
+                                                new Card(CARD_3, SUIT_C),
+                                                new Card(CARD_3, SUIT_C),
+                                                new Card(CARD_2, SUIT_C)
+                                        )
                                 )
                         ),
                         new PlayerWithRank(
@@ -69,6 +97,14 @@ class RoundTest {
                                 new Player(new Rule(false),
                                         List.of(new Card(CARD_5, SUIT_C),
                                                 new Card(CARD_6, SUIT_D)
+                                        )
+                                ),
+                                Tuple.of(FLUSH,
+                                        List.of(new Card(CARD_7, SUIT_C),
+                                                new Card(CARD_6, SUIT_C),
+                                                new Card(CARD_5, SUIT_C),
+                                                new Card(CARD_3, SUIT_C),
+                                                new Card(CARD_2, SUIT_C)
                                         )
                                 )
                         ),
@@ -78,21 +114,46 @@ class RoundTest {
                                         List.of(new Card(CARD_T, SUIT_D),
                                                 new Card(CARD_9, SUIT_C)
                                         )
+                                ),
+                                Tuple.of(FLUSH,
+                                        List.of(new Card(CARD_9, SUIT_C),
+                                                new Card(CARD_7, SUIT_C),
+                                                new Card(CARD_6, SUIT_C),
+                                                new Card(CARD_3, SUIT_C),
+                                                new Card(CARD_2, SUIT_C)
+                                        )
                                 )
                         ),
+
                         new PlayerWithRank(
                                 5,
                                 new Player(new Rule(false),
-                                        List.of(new Card(CARD_A, SUIT_C),
-                                                new Card(CARD_K, SUIT_D)
+                                        List.of(new Card(CARD_J, SUIT_C),
+                                                new Card(CARD_Q, SUIT_D)
+                                        )
+                                ),
+                                Tuple.of(FLUSH,
+                                        List.of(new Card(CARD_J, SUIT_C),
+                                                new Card(CARD_7, SUIT_C),
+                                                new Card(CARD_6, SUIT_C),
+                                                new Card(CARD_3, SUIT_C),
+                                                new Card(CARD_2, SUIT_C)
                                         )
                                 )
                         ),
                         new PlayerWithRank(
                                 6,
                                 new Player(new Rule(false),
-                                        List.of(new Card(CARD_J, SUIT_C),
-                                                new Card(CARD_Q, SUIT_D)
+                                        List.of(new Card(CARD_A, SUIT_C),
+                                                new Card(CARD_K, SUIT_D)
+                                        )
+                                ),
+                                Tuple.of(FLUSH,
+                                        List.of(new Card(CARD_A, SUIT_C),
+                                                new Card(CARD_7, SUIT_C),
+                                                new Card(CARD_6, SUIT_C),
+                                                new Card(CARD_3, SUIT_C),
+                                                new Card(CARD_2, SUIT_C)
                                         )
                                 )
                         )
@@ -425,6 +486,7 @@ class RoundTest {
     @ParameterizedTest
     @MethodSource("testDataPositiveCases")
     void getPlayersRank(final List<PlayerWithRank> playerWithRanks, final Round round) {
-        assertEquals(playerWithRanks, round.getPlayersRank());
+        final List<PlayerWithRank> pwr = round.getPlayersRank();
+        assertEquals(playerWithRanks, pwr);
     }
 }

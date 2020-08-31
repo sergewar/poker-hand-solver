@@ -4,6 +4,8 @@ import com.sss.holdem.card.Card;
 import com.sss.holdem.card.CardRank;
 import com.sss.holdem.card.helpers.CardByRankHighToLowComparator;
 import com.sss.holdem.card.helpers.CardBySuitComparator;
+import io.vavr.Tuple;
+import io.vavr.Tuple2;
 import io.vavr.control.Option;
 
 import java.util.ArrayList;
@@ -15,6 +17,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static com.sss.holdem.round.checkers.CombinationRank.STRAIGHT;
 import static io.vavr.API.None;
 import static io.vavr.API.Some;
 
@@ -34,7 +37,7 @@ public class StraightCombination implements Combination {
      * @return is valid and list of 5 cards creating this combination
      */
     @Override
-    public Option<List<Card>> isCombinationValid(final List<Card> cards) {
+    public Option<Tuple2<CombinationRank, List<Card>>> isCombinationValid(final List<Card> cards) {
         final List<Card> cardsSorted = cards.stream()
                 .sorted(new CardBySuitComparator())
                 .sorted(new CardByRankHighToLowComparator())
@@ -48,27 +51,27 @@ public class StraightCombination implements Combination {
         Option<List<Card>> strSorted = getBestSublistFiveCardsOrderedOnByOne(cardsSorted);
         if (strSorted.isDefined()) {
             final List<Card> straightCards = strSorted.get();
-            return Some(
+            return Some(Tuple.of(STRAIGHT,
                     List.of(
-                            straightCards.get(4),
-                            straightCards.get(3),
-                            straightCards.get(2),
+                            straightCards.get(0),
                             straightCards.get(1),
-                            straightCards.get(0)
-                    ));
+                            straightCards.get(2),
+                            straightCards.get(3),
+                            straightCards.get(4)
+                    )));
         } else if (cardsSorted.get(0).getCardRank() == CardRank.CARD_A
                 && cardsSorted.get(cardsSorted.size() - 1).getCardRank() == CardRank.CARD_2
                 && cardsSorted.get(cardsSorted.size() - 2).getCardRank() == CardRank.CARD_3
                 && cardsSorted.get(cardsSorted.size() - 3).getCardRank() == CardRank.CARD_4
                 && cardsSorted.get(cardsSorted.size() - 4).getCardRank() == CardRank.CARD_5) {
-            return Some(
+            return Some(Tuple.of(STRAIGHT,
                     List.of(
-                            cardsSorted.get(0),
-                            cardsSorted.get(cardsSorted.size() - 1),
-                            cardsSorted.get(cardsSorted.size() - 2),
+                            cardsSorted.get(cardsSorted.size() - 4),
                             cardsSorted.get(cardsSorted.size() - 3),
-                            cardsSorted.get(cardsSorted.size() - 4)
-                    ));
+                            cardsSorted.get(cardsSorted.size() - 2),
+                            cardsSorted.get(cardsSorted.size() - 1),
+                            cardsSorted.get(0)
+                    )));
 
         }
         return None();
