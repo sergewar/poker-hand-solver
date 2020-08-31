@@ -1,5 +1,6 @@
 package com.sss.holdem.card;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -22,6 +23,7 @@ public enum CardRank {
     CARD_K('K', 13),
     CARD_A('A', 14);
 
+    @Getter(AccessLevel.PACKAGE)
     private final char rank;
     private final int rankWeight;
 
