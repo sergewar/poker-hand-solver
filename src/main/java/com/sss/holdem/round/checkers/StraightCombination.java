@@ -51,28 +51,49 @@ public class StraightCombination implements Combination {
         Option<List<Card>> strSorted = getBestSublistFiveCardsOrderedOnByOne(cardsSorted);
         if (strSorted.isDefined()) {
             final List<Card> straightCards = strSorted.get();
-            return Some(Tuple.of(STRAIGHT,
-                    List.of(
-                            straightCards.get(0),
-                            straightCards.get(1),
-                            straightCards.get(2),
-                            straightCards.get(3),
-                            straightCards.get(4)
-                    )));
-        } else if (cardsSorted.get(0).getCardRank() == CardRank.CARD_A
-                && cardsSorted.get(cardsSorted.size() - 1).getCardRank() == CardRank.CARD_2
-                && cardsSorted.get(cardsSorted.size() - 2).getCardRank() == CardRank.CARD_3
-                && cardsSorted.get(cardsSorted.size() - 3).getCardRank() == CardRank.CARD_4
-                && cardsSorted.get(cardsSorted.size() - 4).getCardRank() == CardRank.CARD_5) {
-            return Some(Tuple.of(STRAIGHT,
-                    List.of(
-                            cardsSorted.get(cardsSorted.size() - 4),
-                            cardsSorted.get(cardsSorted.size() - 3),
-                            cardsSorted.get(cardsSorted.size() - 2),
-                            cardsSorted.get(cardsSorted.size() - 1),
-                            cardsSorted.get(0)
-                    )));
-
+            return Some(
+                    Tuple.of(
+                            STRAIGHT,
+                            List.of(
+                                    straightCards.get(0),
+                                    straightCards.get(1),
+                                    straightCards.get(2),
+                                    straightCards.get(3),
+                                    straightCards.get(4)
+                            )));
+        } else if (cardsSorted.get(0).getCardRank() == CardRank.CARD_A) {
+            if ((cardsSorted.size() > 5)) {
+                Option<List<Card>> strSortedWithoutAInHead = getBestSublistFiveCardsOrderedOnByOne(cardsSorted.subList(1, cardsSorted.size()));
+                if (strSortedWithoutAInHead.isDefined()) {
+                    final List<Card> straightCards = strSortedWithoutAInHead.get();
+                    return Some(
+                            Tuple.of(
+                                    STRAIGHT,
+                                    List.of(
+                                            straightCards.get(0),
+                                            straightCards.get(1),
+                                            straightCards.get(2),
+                                            straightCards.get(3),
+                                            straightCards.get(4)
+                                    )));
+                }
+            }
+            if (cardsSorted.get(cardsSorted.size() - 4).getCardRank() == CardRank.CARD_5
+                    && cardsSorted.get(cardsSorted.size() - 3).getCardRank() == CardRank.CARD_4
+                    && cardsSorted.get(cardsSorted.size() - 2).getCardRank() == CardRank.CARD_3
+                    && cardsSorted.get(cardsSorted.size() - 1).getCardRank() == CardRank.CARD_2) {
+                return Some(
+                        Tuple.of(
+                                STRAIGHT,
+                                List.of(
+                                        cardsSorted.get(cardsSorted.size() - 4),
+                                        cardsSorted.get(cardsSorted.size() - 3),
+                                        cardsSorted.get(cardsSorted.size() - 2),
+                                        cardsSorted.get(cardsSorted.size() - 1),
+                                        cardsSorted.get(0)
+                                )));
+            }
+            return None();
         }
         return None();
     }
