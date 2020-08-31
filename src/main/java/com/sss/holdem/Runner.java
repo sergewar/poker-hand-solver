@@ -28,7 +28,6 @@ public class Runner {
         }
         final Reader reader = !"".equals(fileIn) ? new FFileReader(fileIn) : new ConsoleReader();
         final Writer writer = !"".equals(fileOut) ? new FFileWriter(fileOut) : new ConsoleWriter();
-        writer.writeLine("Output:");
 
         try {
             String s;
@@ -46,7 +45,7 @@ public class Runner {
         }
     }
 
-    public static void printResultForRound(final Writer writer, final Round round) {
+    private static void printResultForRound(final Writer writer, final Round round) {
         if (round.isValid()) {
             final List<PlayerWithRank> pwr = round.getPlayersRank();
             writer.writeLine(new RoundPlayersWithRank(pwr).toString());
