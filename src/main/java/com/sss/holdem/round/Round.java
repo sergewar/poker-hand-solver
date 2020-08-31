@@ -2,7 +2,6 @@ package com.sss.holdem.round;
 
 import com.sss.holdem.board.Board;
 import com.sss.holdem.card.Card;
-import com.sss.holdem.card.helpers.CardsByRankWeightComparator;
 import com.sss.holdem.card.helpers.CardsUtils;
 import com.sss.holdem.player.Player;
 import com.sss.holdem.player.PlayerWithRank;
@@ -192,6 +191,23 @@ public class Round {
                 return rc;
             }
             return new CardsByRankWeightComparator().compare(o1._2, o2._2);
+        }
+    }
+
+    private static class CardsByRankWeightComparator implements Comparator<List<Card>> {
+        @Override
+        public int compare(final List<Card> cards1, final List<Card> cards2) {
+            if (cards1.size() != cards2.size()) {
+                return cards1.size() - cards2.size();
+            } else {
+                for (int i = 0; i < cards1.size(); i++) {
+                    final int rc = cards1.get(i).getCardRank().getRankWeight() - cards2.get(i).getCardRank().getRankWeight();
+                    if (rc != 0) {
+                        return rc;
+                    }
+                }
+            }
+            return 0;
         }
     }
 }
