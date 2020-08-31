@@ -23,7 +23,7 @@ public class Runner {
 
         final String fileIn = System.getProperty("fileIn", "");
         final String fileOut = System.getProperty("fileOut", "");
-        if (fileIn.equals(fileOut)) {
+        if (!"".equals(fileIn) && fileIn.equals(fileOut)) {
             throw new IllegalArgumentException("Input file and output file should be different but they have the same name " + fileIn);
         }
         final Reader reader = !"".equals(fileIn) ? new FFileReader(fileIn) : new ConsoleReader();
