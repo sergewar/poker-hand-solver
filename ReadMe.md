@@ -1,3 +1,4 @@
+![Java CI with Maven](https://github.com/sergewar/s-bootcamp/workflows/Java%20CI%20with%20Maven/badge.svg?branch=master)
 ## Here a program implementing algorithm for comparing the strength of Texas Hold'em Hands.
 More info about Texas Hold'em game available at [wiki](https://en.wikipedia.org/wiki/Texas_hold_%27em)
 
