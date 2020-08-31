@@ -12,4 +12,10 @@ public class ConsoleReader implements Reader {
     public String readLine() {
         return br.readLine();
     }
+
+    @Override
+    @SneakyThrows
+    public void close() {
+        br.close();
+    }
 }

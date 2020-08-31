@@ -6,6 +6,8 @@ import com.sss.holdem.round.RoundPlayersWithRank;
 import com.sss.holdem.rules.Rule;
 import com.sss.holdem.utils.ConsoleReader;
 import com.sss.holdem.utils.ConsoleWriter;
+import com.sss.holdem.utils.FFileReader;
+import com.sss.holdem.utils.FFileWriter;
 import com.sss.holdem.utils.Reader;
 import com.sss.holdem.utils.RoundParser;
 import com.sss.holdem.utils.Writer;
@@ -19,28 +21,37 @@ public class Runner {
         final Rule rule = new Rule(isOmahaRule);
         final RoundParser roundParser = new RoundParser(rule);
 
-        final Reader consoleReader = new ConsoleReader();
-        final Writer consoleWriter = new ConsoleWriter();
-        consoleWriter.writeLine("Output:");
+        final String fileIn = System.getProperty("fileIn", "");
+        final String fileOut = System.getProperty("fileOut", "");
+        if (fileIn.equals(fileOut)) {
+            throw new IllegalArgumentException("Input file and output file should be different but they have the same name " + fileIn);
+        }
+        final Reader reader = !"".equals(fileIn) ? new FFileReader(fileIn) : new ConsoleReader();
+        final Writer writer = !"".equals(fileOut) ? new FFileWriter(fileOut) : new ConsoleWriter();
+        writer.writeLine("Output:");
 
-        String s;
-        while ((s = consoleReader.readLine()) != null) {
-            final Either<String, Round> round = roundParser.parse(s);
-            if (round.isLeft()) {
-                System.out.println(round.getLeft());
-            } else {
-                printResultForRound(round.get());
+        try {
+            String s;
+            while ((s = reader.readLine()) != null) {
+                final Either<String, Round> round = roundParser.parse(s);
+                if (round.isLeft()) {
+                    writer.writeLine(round.getLeft());
+                } else {
+                    printResultForRound(writer, round.get());
+                }
             }
+        } finally {
+            reader.close();
+            writer.close();
         }
     }
 
-    public static void printResultForRound(final Round round) {
-        final Writer consoleWriter = new ConsoleWriter();
+    public static void printResultForRound(final Writer writer, final Round round) {
         if (round.isValid()) {
             final List<PlayerWithRank> pwr = round.getPlayersRank();
-            consoleWriter.writeLine(new RoundPlayersWithRank(pwr).toString());
+            writer.writeLine(new RoundPlayersWithRank(pwr).toString());
         } else {
-            consoleWriter.writeLine(round.getRoundInfo());
+            writer.writeLine(round.getRoundInfo());
         }
     }
 }
