@@ -16,7 +16,7 @@ public enum CardRank {
     CARD_6('6', 6),
     CARD_7('7', 7),
     CARD_8('8', 8),
-    CARD_9('9', 8),
+    CARD_9('9', 9),
     CARD_T('T', 10),
     CARD_J('J', 11),
     CARD_Q('Q', 12),
