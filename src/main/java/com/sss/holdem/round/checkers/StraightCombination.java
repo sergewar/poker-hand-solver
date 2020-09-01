@@ -106,7 +106,11 @@ public class StraightCombination implements Combination {
 //        }
 
         for (int i = 0; i < cards.size(); i++) {
-            final Iterator<Card> iter = cards.subList(i, cards.size()).iterator();
+            final List<Card> cardsSubList = cards.subList(i, cards.size());
+            if (cardsSubList.size() < 5) {
+                return None();
+            }
+            final Iterator<Card> iter = cardsSubList.iterator();
             final List<Card> strCards = new ArrayList<>();
             Card current;
             Card previous = iter.next();
@@ -119,9 +123,9 @@ public class StraightCombination implements Combination {
                 }
                 previous = current;
                 strCards.add(previous);
-            }
-            if (strCards.size() == 5) {
-                return Some(strCards);
+                if (strCards.size() == 5) {
+                    return Some(strCards.subList(0, 5));
+                }
             }
         }
         return None();
