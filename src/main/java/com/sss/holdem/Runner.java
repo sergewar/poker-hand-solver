@@ -15,14 +15,20 @@ import io.vavr.control.Either;
 
 import java.util.List;
 
+import static com.sss.holdem.utils.PropertiesUtils.getFileIn;
+import static com.sss.holdem.utils.PropertiesUtils.getFileOut;
+import static com.sss.holdem.utils.PropertiesUtils.isLog;
+
 public class Runner {
     public static void main(final String[] args) {
+        final boolean isLog = isLog();
+        final String fileIn = getFileIn();
+        final String fileOut = getFileOut();
+
         final boolean isOmahaRule = List.of(args).contains("--omaha");
         final Rule rule = new Rule(isOmahaRule);
         final RoundParser roundParser = new RoundParser(rule);
 
-        final String fileIn = System.getProperty("fileIn", "");
-        final String fileOut = System.getProperty("fileOut", "");
         if (!"".equals(fileIn) && fileIn.equals(fileOut)) {
             throw new IllegalArgumentException("Input file and output file should be different but they have the same name " + fileIn);
         }
@@ -32,6 +38,9 @@ public class Runner {
         try {
             String s;
             while ((s = reader.readLine()) != null) {
+                if (isLog) {
+                    System.out.println("Input line: " + s);
+                }
                 final Either<String, Round> round = roundParser.parse(s);
                 if (round.isLeft()) {
                     writer.writeLine(round.getLeft());

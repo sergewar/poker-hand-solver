@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.sss.holdem.utils.ListUtils.concatLists;
+import static com.sss.holdem.utils.PropertiesUtils.isLog;
 
 @Getter
 @ToString
@@ -74,7 +75,7 @@ public class Round {
 
     public List<PlayerWithRank> getPlayersRank() {
         final List<Tuple2<Player, Tuple2<CombinationRank, List<Card>>>> playersResult = new ArrayList<>();
-        final boolean isLog = Boolean.parseBoolean(System.getProperty("logg", "false"));
+        final boolean isLog = isLog();
         players.forEach(player -> {
             final List<Card> allCards = concatLists(board.getBoardCards(), player.getCards());
 
