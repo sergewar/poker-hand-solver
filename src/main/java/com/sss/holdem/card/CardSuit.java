@@ -8,8 +8,8 @@ import java.util.stream.Stream;
 @Getter
 @AllArgsConstructor
 public enum CardSuit {
-    SUIT_D('d'),
     SUIT_C('c'),
+    SUIT_D('d'),
     SUIT_H('h'),
     SUIT_S('s');
 
