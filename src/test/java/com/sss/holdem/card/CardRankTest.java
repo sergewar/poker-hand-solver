@@ -1,7 +1,11 @@
 package com.sss.holdem.card;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import static com.sss.holdem.card.CardRank.CARD_2;
 import static com.sss.holdem.card.CardRank.CARD_3;
@@ -18,6 +22,7 @@ import static com.sss.holdem.card.CardRank.CARD_Q;
 import static com.sss.holdem.card.CardRank.CARD_T;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CardRankTest {
 
@@ -72,5 +77,26 @@ class CardRankTest {
     @MethodSource("testDataNegativeCases")
     void getCardRankByRank_NegativeCases(final char rank) {
         assertThrows(IllegalArgumentException.class, () -> CardRank.getCardRankByRank(rank));
+    }
+
+    @Test
+    void testCardsRatingRelations() {
+        final boolean isCorrectOrder =
+                CARD_2.getRankWeight() < CARD_3.getRankWeight()
+                        && CARD_3.getRankWeight() < CARD_4.getRankWeight()
+                        && CARD_4.getRankWeight() < CARD_5.getRankWeight()
+                        && CARD_5.getRankWeight() < CARD_6.getRankWeight()
+                        && CARD_6.getRankWeight() < CARD_7.getRankWeight()
+                        && CARD_7.getRankWeight() < CARD_8.getRankWeight()
+                        && CARD_8.getRankWeight() < CARD_9.getRankWeight()
+                        && CARD_9.getRankWeight() < CARD_T.getRankWeight()
+                        && CARD_T.getRankWeight() < CARD_J.getRankWeight()
+                        && CARD_J.getRankWeight() < CARD_Q.getRankWeight()
+                        && CARD_Q.getRankWeight() < CARD_K.getRankWeight()
+                        && CARD_K.getRankWeight() < CARD_A.getRankWeight();
+        assertTrue(isCorrectOrder, "Cards rank weight in incorrect order:\n"
+                + Arrays.stream(CardRank.values())
+                .map(cr -> "Card rank: " + cr + " card has rank weight: " + cr.getRankWeight())
+        .collect(Collectors.joining("\n")));
     }
 }
