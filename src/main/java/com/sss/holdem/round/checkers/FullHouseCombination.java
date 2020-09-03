@@ -13,7 +13,6 @@ import static com.sss.holdem.round.checkers.CombinationRank.FULL_HOUSE;
 import static com.sss.holdem.utils.ListUtils.concatLists;
 import static io.vavr.API.None;
 import static io.vavr.API.Some;
-import static io.vavr.control.Option.none;
 
 public class FullHouseCombination implements Combination {
 
@@ -28,7 +27,7 @@ public class FullHouseCombination implements Combination {
         final SomeKindOfCards someKindOfCards = new SomeKindOfCards();
         final List<Card> list3 = someKindOfCards.getStrongestCardsWithTheSameKind(cards, 3);
         if (list3.isEmpty()) {
-            return none();
+            return None();
         } else {
             final List<Card> cardsWithoutThreeOfAKind = cards.stream()
                     .filter(e -> !list3.contains(e))
