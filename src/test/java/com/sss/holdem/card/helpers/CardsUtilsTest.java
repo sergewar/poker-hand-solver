@@ -59,9 +59,9 @@ class CardsUtilsTest {
                 new Card(CardRank.getCardRankByRank('A'), CardSuit.getCardSuitBySuit('d')),
                 new Card(CardRank.getCardRankByRank('2'), CardSuit.getCardSuitBySuit('h')));
         assertAll(
-                () -> assertEquals(4, new CardsUtils().countOfCardsByRank(cards, CARD_A)),
-                () -> assertEquals(3, new CardsUtils().countOfCardsByRank(cards, CARD_K)),
-                () -> assertEquals(1, new CardsUtils().countOfCardsByRank(cards, CARD_2))
+                () -> assertEquals(4, new CardsUtils().countOfCardsWithRank(cards, CARD_A)),
+                () -> assertEquals(3, new CardsUtils().countOfCardsWithRank(cards, CARD_K)),
+                () -> assertEquals(1, new CardsUtils().countOfCardsWithRank(cards, CARD_2))
         );
     }
 }

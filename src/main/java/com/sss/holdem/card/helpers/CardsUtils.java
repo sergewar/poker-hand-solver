@@ -23,7 +23,7 @@ public class CardsUtils {
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public int countOfCardsByRank(final List<Card> cards, final CardRank cardRank) {
+    public int countOfCardsWithRank(final List<Card> cards, final CardRank cardRank) {
         return (int) cards.stream().filter(card -> card.getCardRank() == cardRank).count();
     }
 }

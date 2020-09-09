@@ -11,13 +11,21 @@ import java.util.stream.Collectors;
 
 class SomeKindOfCards {
     List<Card> getStrongestCardsWithTheSameKind(final List<Card> cards, final int quantity) {
+        return getStrongestCardsWithTheSameKind(cards, quantity, true);
+    }
+
+    List<Card> getStrongestCardsWithTheSameKind(final List<Card> cards, final int quantity, final boolean strictQuantity) {
         final CardsUtils cardsUtils = new CardsUtils();
         // todo not the best algorithm, need to update getting card's rank with quantity equals {@code quantity}
         final List<CardRank> cardsRankWithSameRankWithQuantity = cards.stream()
                 .sorted(new CardByRankHighToLowComparator())
                 .map(Card::getCardRank)
                 .distinct()
-                .filter(entry -> cardsUtils.countOfCardsByRank(cards, entry) == quantity)
+                .filter(cardRank -> {
+                            final var countOfCardsWithRank = cardsUtils.countOfCardsWithRank(cards, cardRank);
+                            return strictQuantity ? countOfCardsWithRank == quantity : countOfCardsWithRank >= quantity;
+                        }
+                )
                 .collect(Collectors.toUnmodifiableList());
         if (cardsRankWithSameRankWithQuantity.isEmpty()) {
             return List.of();

@@ -33,11 +33,11 @@ public class FullHouseCombination implements Combination {
                     .filter(e -> !list3.contains(e))
                     .sorted(new CardByRankHighToLowComparator())
                     .collect(Collectors.toUnmodifiableList());
-            final List<Card> list2 = someKindOfCards.getStrongestCardsWithTheSameKind(cardsWithoutThreeOfAKind, 2);
+            final List<Card> list2 = someKindOfCards.getStrongestCardsWithTheSameKind(cardsWithoutThreeOfAKind, 2, false);
             if (list2.isEmpty()) {
                 return None();
             } else {
-                return Some(Tuple.of(FULL_HOUSE, concatLists(list3, list2)));
+                return Some(Tuple.of(FULL_HOUSE, concatLists(list3, list2.subList(0, 2))));
             }
         }
     }
