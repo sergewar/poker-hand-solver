@@ -79,73 +79,73 @@ public class Round {
         players.forEach(player -> {
             final List<Card> allCards = concatLists(board.getBoardCards(), player.getCards());
 
-            final Option<Tuple2<CombinationRank, List<Card>>> sfResult = new StraightFlushCombination().isCombinationValid(allCards);
-            if (sfResult.isDefined()) { // STRAIGHT_FLUSH
-                if (isLog)
-                    System.out.println("Straight flush. Player's cards: " + player.getCards() + " Player's combination: " + sfResult.get());
-                playersResult.add(Tuple.of(player, sfResult.get()));
-                return;
-            }
-            final Option<Tuple2<CombinationRank, List<Card>>> fkResult = new FourOfAKindCombination().isCombinationValid(allCards);
-            if (fkResult.isDefined()) { // FOUR_OF_A_KIND
-                if (isLog)
-                    System.out.println("Four of a kind. Player's cards: " + player.getCards() + " Player's combination: " + fkResult.get());
-                playersResult.add(Tuple.of(player, fkResult.get()));
-                return;
-            }
-            final Option<Tuple2<CombinationRank, List<Card>>> fhResult = new FullHouseCombination().isCombinationValid(allCards);
-            if (fhResult.isDefined()) { // FULL_HOUSE
-                if (isLog)
-                    System.out.println("Full house. Player's cards: " + player.getCards() + " Player's combination: " + fhResult.get());
-                playersResult.add(Tuple.of(player, fhResult.get()));
-                return;
-            }
-            final Option<Tuple2<CombinationRank, List<Card>>> fResult = new FlushCombination().isCombinationValid(allCards);
-            if (fResult.isDefined()) { // FLUSH
-                if (isLog)
-                    System.out.println("Flush. Player's cards: " + player.getCards() + " Player's combination: " + fResult.get());
-                playersResult.add(Tuple.of(player, fResult.get()));
-                return;
-            }
-            final Option<Tuple2<CombinationRank, List<Card>>> sResult = new StraightCombination().isCombinationValid(allCards);
-            if (sResult.isDefined()) { // STRAIGHT
-                if (isLog)
-                    System.out.println("Straight. Player's cards: " + player.getCards() + " Player's combination: " + sResult.get());
-                playersResult.add(Tuple.of(player, sResult.get()));
-                return;
-            }
-            final Option<Tuple2<CombinationRank, List<Card>>> tkResult = new ThreeOfAKindCombination().isCombinationValid(allCards);
-            if (tkResult.isDefined()) { // THREE_OF_A_KIND
-                if (isLog)
-                    System.out.println("Three of a kind. Player's cards: " + player.getCards() + " Player's combination: " + tkResult.get());
-                playersResult.add(Tuple.of(player, tkResult.get()));
-                return;
-            }
-            final Option<Tuple2<CombinationRank, List<Card>>> tpResult = new TwoPairsCombination().isCombinationValid(allCards);
-            if (tpResult.isDefined()) { // TWO_PAIRS
-                if (isLog)
-                    System.out.println("Two pairs. Player's cards: " + player.getCards() + " Player's combination: " + tpResult.get());
-                playersResult.add(Tuple.of(player, tpResult.get()));
-                return;
-            }
-            final Option<Tuple2<CombinationRank, List<Card>>> pResult = new PairCombination().isCombinationValid(allCards);
-            if (pResult.isDefined()) { // PAIR
-                if (isLog)
-                    System.out.println("Pair. Player's cards: " + player.getCards() + " Player's combination: " + pResult.get());
-                playersResult.add(Tuple.of(player, pResult.get()));
-                return;
-            }
-            final Option<Tuple2<CombinationRank, List<Card>>> hResult = new HighCardCombination().isCombinationValid(allCards);
-            if (hResult.isDefined()) { // HIGH_CARD
-                if (isLog)
-                    System.out.println("High card. Player's cards: " + player.getCards() + " Player's combination: " + hResult.get());
-                playersResult.add(Tuple.of(player, hResult.get()));
-                return;
-            }
-
-            throw new RuntimeException("Player haven't result, it's strange");
+            final Tuple2<CombinationRank, List<Card>> resultForCombination = resultForCombination(allCards);
+            playersResult.add(Tuple.of(player, resultForCombination));
+            if (isLog)
+                System.out.println("Player's cards: " + player.getCards() + " Combination: " + resultForCombination);
         });
         return getSortedPlayersWithRankFromPlayersResult(playersResult);
+    }
+
+    private Tuple2<CombinationRank, List<Card>> resultForCombination(List<Card> allCards) {
+        final boolean isLog = isLog();
+
+        final Option<Tuple2<CombinationRank, List<Card>>> sfResult = new StraightFlushCombination().isCombinationValid(allCards);
+        if (sfResult.isDefined()) { // STRAIGHT_FLUSH
+            if (isLog)
+                System.out.println("Combination: " + sfResult.get());
+            return sfResult.get();
+        }
+        final Option<Tuple2<CombinationRank, List<Card>>> fkResult = new FourOfAKindCombination().isCombinationValid(allCards);
+        if (fkResult.isDefined()) { // FOUR_OF_A_KIND
+            if (isLog)
+                System.out.println("Combination: " + fkResult.get());
+            return fkResult.get();
+        }
+        final Option<Tuple2<CombinationRank, List<Card>>> fhResult = new FullHouseCombination().isCombinationValid(allCards);
+        if (fhResult.isDefined()) { // FULL_HOUSE
+            if (isLog)
+                System.out.println("Combination: " + fhResult.get());
+            return fhResult.get();
+        }
+        final Option<Tuple2<CombinationRank, List<Card>>> fResult = new FlushCombination().isCombinationValid(allCards);
+        if (fResult.isDefined()) { // FLUSH
+            if (isLog)
+                System.out.println("Combination: " + fResult.get());
+            return fResult.get();
+        }
+        final Option<Tuple2<CombinationRank, List<Card>>> sResult = new StraightCombination().isCombinationValid(allCards);
+        if (sResult.isDefined()) { // STRAIGHT
+            if (isLog)
+                System.out.println("Combination: " + sResult.get());
+            return sResult.get();
+        }
+        final Option<Tuple2<CombinationRank, List<Card>>> tkResult = new ThreeOfAKindCombination().isCombinationValid(allCards);
+        if (tkResult.isDefined()) { // THREE_OF_A_KIND
+            if (isLog)
+                System.out.println("Combination: " + tkResult.get());
+            return tkResult.get();
+        }
+        final Option<Tuple2<CombinationRank, List<Card>>> tpResult = new TwoPairsCombination().isCombinationValid(allCards);
+        if (tpResult.isDefined()) { // TWO_PAIRS
+            if (isLog)
+                System.out.println("Combination: " + tpResult.get());
+            return tpResult.get();
+        }
+        final Option<Tuple2<CombinationRank, List<Card>>> pResult = new PairCombination().isCombinationValid(allCards);
+        if (pResult.isDefined()) { // PAIR
+            if (isLog)
+                System.out.println("Combination: " + pResult.get());
+            return pResult.get();
+        }
+        final Option<Tuple2<CombinationRank, List<Card>>> hResult = new HighCardCombination().isCombinationValid(allCards);
+        if (hResult.isDefined()) { // HIGH_CARD
+            if (isLog)
+                System.out.println("Combination: " + hResult.get());
+            return hResult.get();
+        }
+
+        throw new RuntimeException("Player haven't result, it's strange");
     }
 
     private List<PlayerWithRank> getSortedPlayersWithRankFromPlayersResult(final List<Tuple2<Player, Tuple2<CombinationRank, List<Card>>>> playersResult) {
