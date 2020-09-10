@@ -34,7 +34,11 @@ class SomeKindOfCards {
                     .filter(card -> card.getCardRank() == cardsRankWithSameRankWithQuantity.get(0))
                     .sorted(new CardBySuitComparator())
                     .collect(Collectors.toUnmodifiableList());
-            assert output.size() == quantity;
+            if (strictQuantity) {
+                assert output.size() == quantity;
+            } else {
+                assert output.size() >= quantity;
+            }
             return output;
         }
     }

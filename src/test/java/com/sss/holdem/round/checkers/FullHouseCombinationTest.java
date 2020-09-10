@@ -56,6 +56,20 @@ class FullHouseCombinationTest {
                                 new Card(CARD_K, SUIT_D),
                                 new Card(CARD_K, SUIT_H)
                         )},
+                {List.of(new Card(CARD_Q, SUIT_H),
+                        new Card(CARD_Q, SUIT_S),
+                        new Card(CARD_Q, SUIT_C),
+                        new Card(CARD_9, SUIT_D),
+                        new Card(CARD_3, SUIT_H),
+                        new Card(CARD_3, SUIT_D),
+                        new Card(CARD_3, SUIT_S)
+                ),
+                        List.of(new Card(CARD_Q, SUIT_C),
+                                new Card(CARD_Q, SUIT_H),
+                                new Card(CARD_Q, SUIT_S),
+                                new Card(CARD_3, SUIT_D),
+                                new Card(CARD_3, SUIT_H)
+                        )},
 
         };
     }
