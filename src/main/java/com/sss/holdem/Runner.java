@@ -26,6 +26,9 @@ public class Runner {
         final String fileOut = getFileOut();
 
         final boolean isOmahaRule = List.of(args).contains("--omaha");
+        if (isLog) {
+            System.out.println("Omaha rule: " + isOmahaRule);
+        }
         final Rule rule = new Rule(isOmahaRule);
         final RoundParser roundParser = new RoundParser(rule);
 
