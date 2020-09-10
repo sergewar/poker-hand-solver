@@ -135,56 +135,38 @@ public class Round {
 
         final Option<Tuple2<CombinationRank, List<Card>>> sfResult = new StraightFlushCombination().isCombinationValid(allCards);
         if (sfResult.isDefined()) { // STRAIGHT_FLUSH
-            if (isLog)
-                System.out.println("Combination: " + sfResult.get());
             return sfResult.get();
         }
         final Option<Tuple2<CombinationRank, List<Card>>> fkResult = new FourOfAKindCombination().isCombinationValid(allCards);
         if (fkResult.isDefined()) { // FOUR_OF_A_KIND
-            if (isLog)
-                System.out.println("Combination: " + fkResult.get());
             return fkResult.get();
         }
         final Option<Tuple2<CombinationRank, List<Card>>> fhResult = new FullHouseCombination().isCombinationValid(allCards);
         if (fhResult.isDefined()) { // FULL_HOUSE
-            if (isLog)
-                System.out.println("Combination: " + fhResult.get());
             return fhResult.get();
         }
         final Option<Tuple2<CombinationRank, List<Card>>> fResult = new FlushCombination().isCombinationValid(allCards);
         if (fResult.isDefined()) { // FLUSH
-            if (isLog)
-                System.out.println("Combination: " + fResult.get());
             return fResult.get();
         }
         final Option<Tuple2<CombinationRank, List<Card>>> sResult = new StraightCombination().isCombinationValid(allCards);
         if (sResult.isDefined()) { // STRAIGHT
-            if (isLog)
-                System.out.println("Combination: " + sResult.get());
             return sResult.get();
         }
         final Option<Tuple2<CombinationRank, List<Card>>> tkResult = new ThreeOfAKindCombination().isCombinationValid(allCards);
         if (tkResult.isDefined()) { // THREE_OF_A_KIND
-            if (isLog)
-                System.out.println("Combination: " + tkResult.get());
             return tkResult.get();
         }
         final Option<Tuple2<CombinationRank, List<Card>>> tpResult = new TwoPairsCombination().isCombinationValid(allCards);
         if (tpResult.isDefined()) { // TWO_PAIRS
-            if (isLog)
-                System.out.println("Combination: " + tpResult.get());
             return tpResult.get();
         }
         final Option<Tuple2<CombinationRank, List<Card>>> pResult = new PairCombination().isCombinationValid(allCards);
         if (pResult.isDefined()) { // PAIR
-            if (isLog)
-                System.out.println("Combination: " + pResult.get());
             return pResult.get();
         }
         final Option<Tuple2<CombinationRank, List<Card>>> hResult = new HighCardCombination().isCombinationValid(allCards);
         if (hResult.isDefined()) { // HIGH_CARD
-            if (isLog)
-                System.out.println("Combination: " + hResult.get());
             return hResult.get();
         }
 
