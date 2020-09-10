@@ -124,7 +124,6 @@ class RoundTest {
                                         )
                                 )
                         ),
-
                         new PlayerWithRank(
                                 5,
                                 new Player(new Rule(false),

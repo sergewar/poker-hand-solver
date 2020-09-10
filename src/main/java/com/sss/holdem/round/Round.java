@@ -21,13 +21,17 @@ import io.vavr.Tuple2;
 import io.vavr.control.Option;
 import lombok.Getter;
 import lombok.ToString;
+import org.paukov.combinatorics3.Generator;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static com.sss.holdem.utils.ListUtils.concatLists;
 import static com.sss.holdem.utils.PropertiesUtils.isLog;
@@ -41,6 +45,9 @@ public class Round {
     private final String roundInfo;
     private final boolean isValid;
 
+    private final Set<Set<Integer>> boardCombinations;
+    private final Set<Set<Integer>> playerCombinations;
+
     public Round(final Rule rule,
                  final Board board,
                  final List<Player> players,
@@ -50,6 +57,9 @@ public class Round {
         this.players = List.copyOf(players);
         this.roundInfo = roundInfo;
         this.isValid = isRoundValid();
+
+        this.boardCombinations = boardCardsCombinationIndexes2();
+        this.playerCombinations = playerCardsCombinationIndexes2();
     }
 
     private boolean isRoundValid() {
@@ -76,14 +86,47 @@ public class Round {
     public List<PlayerWithRank> getPlayersRank() {
         final List<Tuple2<Player, Tuple2<CombinationRank, List<Card>>>> playersResult = new ArrayList<>();
         final boolean isLog = isLog();
-        players.forEach(player -> {
-            final List<Card> allCards = concatLists(board.getBoardCards(), player.getCards());
+        if (!rule.isOmahaRule()) {
+            players.forEach(player -> {
+                final List<Card> allCards = concatLists(board.getBoardCards(), player.getCards());
+                final Tuple2<CombinationRank, List<Card>> resultForCombination = resultForCombination(allCards);
+                playersResult.add(Tuple.of(player, resultForCombination));
+                if (isLog)
+                    System.out.println("Player's cards: " + player.getCards() + " Combination: " + resultForCombination);
+            });
+        } else {
+            final PlayerCombinationAndCardsComparator combinationAndCardsComparator = new PlayerCombinationAndCardsComparator();
+            players.forEach(player -> {
+                final AtomicReference<Tuple2<CombinationRank, List<Card>>> bestResultForPlayer = new AtomicReference<>(Tuple.of(CombinationRank.HIGH_CARD, List.of()));
+                boardCombinations.forEach(bc -> {
+                    final Iterator<Integer> iterBc = bc.iterator();
+                    final int firstBoardCardIndex = iterBc.next();
+                    final int secondBoardCardIndex = iterBc.next();
+                    final int thirdBoardCardIndex = iterBc.next();
+                    playerCombinations.forEach(pc -> {
+                        final Iterator<Integer> iterPc = pc.iterator();
+                        final int firstPlayerCardIndex = iterPc.next();
+                        final int secondPlayerCardIndex = iterPc.next();
+                        final List<Card> allCards = concatLists(
+                                board.getBoardCards().subList(firstBoardCardIndex, firstBoardCardIndex + 1),
+                                board.getBoardCards().subList(secondBoardCardIndex, secondBoardCardIndex + 1),
+                                board.getBoardCards().subList(thirdBoardCardIndex, thirdBoardCardIndex + 1),
+                                player.getCards().subList(firstPlayerCardIndex, firstPlayerCardIndex + 1),
+                                player.getCards().subList(secondPlayerCardIndex, secondPlayerCardIndex + 1));
 
-            final Tuple2<CombinationRank, List<Card>> resultForCombination = resultForCombination(allCards);
-            playersResult.add(Tuple.of(player, resultForCombination));
-            if (isLog)
-                System.out.println("Player's cards: " + player.getCards() + " Combination: " + resultForCombination);
-        });
+                        final Tuple2<CombinationRank, List<Card>> resultForCombination = resultForCombination(allCards);
+                        if (combinationAndCardsComparator.compare(bestResultForPlayer.get(), resultForCombination) < 0) {
+                            bestResultForPlayer.set(resultForCombination);
+                        }
+                    });
+                });
+
+                playersResult.add(Tuple.of(player, bestResultForPlayer.get()));
+                if (isLog)
+                    System.out.println("Player's cards: " + player.getCards() + " Best combination: " + bestResultForPlayer);
+            });
+        }
+
         return getSortedPlayersWithRankFromPlayersResult(playersResult);
     }
 
@@ -171,6 +214,22 @@ public class Round {
         }
 
         return out;
+    }
+
+    private Set<Set<Integer>> boardCardsCombinationIndexes2() {
+        return Generator.combination(IntStream.range(0, rule.getCountOfBoardsCars()).boxed().collect(Collectors.toUnmodifiableList()))
+                .simple(rule.isOmahaRule() ? 3 : rule.getCountOfBoardsCars())
+                .stream()
+                .map(Set::copyOf)
+                .collect(Collectors.toUnmodifiableSet());
+    }
+
+    private Set<Set<Integer>> playerCardsCombinationIndexes2() {
+        return Generator.combination(IntStream.range(0, rule.getCountOfPlayersCards()).boxed().collect(Collectors.toUnmodifiableList()))
+                .simple(2)
+                .stream()
+                .map(Set::copyOf)
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     private static class PlayerByResultComparator implements Comparator<Tuple2<Player, Tuple2<CombinationRank, List<Card>>>> {
