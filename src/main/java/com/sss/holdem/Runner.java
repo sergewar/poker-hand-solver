@@ -40,9 +40,10 @@ public class Runner {
 
         try {
             String s;
+            int lineNumber = 0;
             while ((s = reader.readLine()) != null) {
                 if (isLog) {
-                    System.out.println("Input line: " + s);
+                    System.out.println("# " + ++lineNumber + " Input line: " + s);
                 }
                 final Either<String, Round> round = roundParser.parse(s);
                 if (round.isLeft()) {
