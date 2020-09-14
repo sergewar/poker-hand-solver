@@ -6,7 +6,7 @@ public final class PropertiesUtils {
     }
 
     public static boolean isLog() {
-        return Boolean.parseBoolean(System.getProperty("logg", "false"));
+        return Boolean.parseBoolean(System.getProperty("log", "false"));
     }
 
     public static String getFileIn() {
