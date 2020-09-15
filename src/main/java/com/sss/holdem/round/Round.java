@@ -130,8 +130,7 @@ public class Round {
         return getSortedPlayersWithRankFromPlayersResult(playersResult);
     }
 
-    private Tuple2<CombinationRank, List<Card>> resultForCombination(List<Card> allCards) {
-        final boolean isLog = isLog();
+    private Tuple2<CombinationRank, List<Card>> resultForCombination(final List<Card> allCards) {
 
         final Option<Tuple2<CombinationRank, List<Card>>> sfResult = new StraightFlushCombination().isCombinationValid(allCards);
         if (sfResult.isDefined()) { // STRAIGHT_FLUSH
