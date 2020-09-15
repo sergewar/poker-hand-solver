@@ -22,7 +22,7 @@ class SomeKindOfCards {
                 .map(Card::getCardRank)
                 .distinct()
                 .filter(cardRank -> {
-                            final var countOfCardsWithRank = cardsUtils.countOfCardsWithRank(cards, cardRank);
+                            final int countOfCardsWithRank = cardsUtils.countOfCardsWithRank(cards, cardRank);
                             return strictQuantity ? countOfCardsWithRank == quantity : countOfCardsWithRank >= quantity;
                         }
                 )
