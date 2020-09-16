@@ -25,6 +25,7 @@ import org.paukov.combinatorics3.Generator;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -84,10 +85,10 @@ public class Round {
     }
 
     public List<PlayerWithRank> getPlayersRank() {
-        final List<Tuple2<Player, Tuple2<CombinationRank, List<Card>>>> playersResult = new ArrayList<>();
         final boolean isLog = isLog();
+        final List<Tuple2<Player, Tuple2<CombinationRank, List<Card>>>> playersResult = Collections.synchronizedList(new ArrayList<>());
         if (!rule.isOmahaRule()) {
-            players.forEach(player -> {
+            players.parallelStream().forEach(player -> {
                 final List<Card> allCards = concatLists(board.getBoardCards(), player.getCards());
                 final Tuple2<CombinationRank, List<Card>> resultForCombination = resultForCombination(allCards);
                 playersResult.add(Tuple.of(player, resultForCombination));
@@ -96,7 +97,7 @@ public class Round {
             });
         } else {
             final PlayerCombinationAndCardsComparator combinationAndCardsComparator = new PlayerCombinationAndCardsComparator();
-            players.forEach(player -> {
+            players.parallelStream().forEach(player -> {
                 final AtomicReference<Tuple2<CombinationRank, List<Card>>> bestResultForPlayer = new AtomicReference<>(Tuple.of(CombinationRank.HIGH_CARD, List.of()));
                 boardCombinations.forEach(bc -> {
                     final Iterator<Integer> iterBc = bc.iterator();
@@ -107,14 +108,14 @@ public class Round {
                         final Iterator<Integer> iterPc = pc.iterator();
                         final int firstPlayerCardIndex = iterPc.next();
                         final int secondPlayerCardIndex = iterPc.next();
-                        final List<Card> allCards = concatLists(
+                        final List<Card> cards = concatLists(
                                 board.getBoardCards().subList(firstBoardCardIndex, firstBoardCardIndex + 1),
                                 board.getBoardCards().subList(secondBoardCardIndex, secondBoardCardIndex + 1),
                                 board.getBoardCards().subList(thirdBoardCardIndex, thirdBoardCardIndex + 1),
                                 player.getCards().subList(firstPlayerCardIndex, firstPlayerCardIndex + 1),
                                 player.getCards().subList(secondPlayerCardIndex, secondPlayerCardIndex + 1));
 
-                        final Tuple2<CombinationRank, List<Card>> resultForCombination = resultForCombination(allCards);
+                        final Tuple2<CombinationRank, List<Card>> resultForCombination = resultForCombination(cards);
                         if (combinationAndCardsComparator.compare(bestResultForPlayer.get(), resultForCombination) < 0) {
                             bestResultForPlayer.set(resultForCombination);
                         }
@@ -127,6 +128,58 @@ public class Round {
             });
         }
 
+        return getSortedPlayersWithRankFromPlayersResult(playersResult);
+    }
+
+    public List<PlayerWithRank> getPlayersRank2() {
+        final boolean isLog = isLog();
+        final List<Tuple2<Player, Tuple2<CombinationRank, List<Card>>>> playersResult =
+                !rule.isOmahaRule()
+                        ? players.parallelStream()
+                        .map(player -> {
+                                    final List<Card> allCards = concatLists(board.getBoardCards(), player.getCards());
+                                    final Tuple2<CombinationRank, List<Card>> resultForCombination = resultForCombination(allCards);
+                                    if (isLog) {
+                                        System.out.println("Player's cards: " + player.getCards() + " Combination: " + resultForCombination);
+                                    }
+                                    return Tuple.of(player, resultForCombination);
+                                }
+                        ).collect(Collectors.toUnmodifiableList())
+                        : players.parallelStream()
+                        .map(player -> {
+                                    final PlayerCombinationAndCardsComparator combinationAndCardsComparator = new PlayerCombinationAndCardsComparator();
+                                    final Tuple2<CombinationRank, List<Card>> bestResultForPlayer =
+                                            boardCombinations.parallelStream()
+                                                    .map(bc -> {
+                                                        final Iterator<Integer> iterBc = bc.iterator();
+                                                        final int firstBoardCardIndex = iterBc.next();
+                                                        final int secondBoardCardIndex = iterBc.next();
+                                                        final int thirdBoardCardIndex = iterBc.next();
+                                                        return playerCombinations.parallelStream()
+                                                                .map(pc -> {
+                                                                    final Iterator<Integer> iterPc = pc.iterator();
+                                                                    final int firstPlayerCardIndex = iterPc.next();
+                                                                    final int secondPlayerCardIndex = iterPc.next();
+                                                                    final List<Card> cards = concatLists(
+                                                                            board.getBoardCards().subList(firstBoardCardIndex, firstBoardCardIndex + 1),
+                                                                            board.getBoardCards().subList(secondBoardCardIndex, secondBoardCardIndex + 1),
+                                                                            board.getBoardCards().subList(thirdBoardCardIndex, thirdBoardCardIndex + 1),
+                                                                            player.getCards().subList(firstPlayerCardIndex, firstPlayerCardIndex + 1),
+                                                                            player.getCards().subList(secondPlayerCardIndex, secondPlayerCardIndex + 1));
+                                                                    return resultForCombination(cards);
+                                                                })
+                                                                .collect(Collectors.toUnmodifiableList());
+                                                    })
+                                                    .flatMap(Collection::stream)
+                                                    .max(combinationAndCardsComparator)
+                                                    .get();
+
+                                    if (isLog) {
+                                        System.out.println("Player's cards: " + player.getCards() + " Best combination: " + bestResultForPlayer);
+                                    }
+                                    return Tuple.of(player, bestResultForPlayer);
+                                }
+                        ).collect(Collectors.toUnmodifiableList());
         return getSortedPlayersWithRankFromPlayersResult(playersResult);
     }
 
