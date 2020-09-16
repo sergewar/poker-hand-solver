@@ -36,7 +36,7 @@ public class BenchMark {
     @Param({"1000"})
     private int N;
 
-    @Param({"false, true"})
+    @Param({"false", "true"})
     private boolean isOmaha;
 
     public static void main(String[] args) throws RunnerException {
