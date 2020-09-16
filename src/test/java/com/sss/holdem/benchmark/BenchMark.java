@@ -10,7 +10,6 @@ import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
-import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
@@ -31,12 +30,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-@OutputTimeUnit(TimeUnit.MILLISECONDS)
 @State(Scope.Benchmark)
 @Fork(value = 1)
 @Warmup(iterations = 1, time = 3)
-@Measurement(iterations = 7, time = 7)
-@Threads(value = 4)
+@Measurement(iterations = 10, time = 10)
+@Threads(value = 1)
 public class BenchMark {
 
     private final List<Round> DATA_FOR_TESTING = new ArrayList<>();
