@@ -62,11 +62,13 @@ public class GameTest {
             final Either<String, Round> round = roundParser.parse(lineWithRound);
             final String actualResult = round.isLeft() ? "" : resultForRound(round.get());
 
+            if (!expectedResult.equals(actualResult)) {
+                System.err.println("Wrong result for round: " + lineWithRound + " Expected result: " + expectedResult + "Actual result: " + actualResult);
+            }
             softAssertions
                     .assertThat(actualResult)
                     .isEqualTo(expectedResult)
-                    .describedAs("Game combination wrong at line: " + lineNumber)
-                    .as("Game combination wrong at line: " + lineNumber);
+                    .as("For round " + lineWithRound + " result combination wrong at line: " + lineNumber);
         }
         softAssertions.assertAll();
         System.out.println("Checked " + lineNumber + " lines");
