@@ -41,8 +41,8 @@ according to [omaha rules](https://en.wikipedia.org/wiki/Omaha_hold_%27em).
 >The basic differences between Omaha and Texas hold 'em are these: first, each player is dealt four hole cards instead of two. The betting rounds and layout of community cards are identical. At showdown, each player's hand is the best five-card hand made from exactly three of the five cards on the board, plus exactly two of the player's own cards. Unlike Texas hold 'em, a player cannot play four or five of the cards on the board with fewer than two of his own, nor can a player use three or four hole cards to disguise a strong hand.
 
 ### Requirements:
-Java 11  
-Maven 3.6.3
+Java 17  
+Maven 3.8.4
 
 ### How to compile
     mvn package  
